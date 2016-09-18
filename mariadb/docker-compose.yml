@@ -7,8 +7,10 @@ services:
       - "33060:3306"
     volumes:
       - /srv/mariadb/master/data:/var/lib/mysql
-      - /srv/mariadb/master/conf.d:/etc/mysql/conf.d:ro
-      - /srv/mariadb/master/entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - /srv/mariadb/master/conf.d:/etc/mysql/conf.d
+      - /srv/mariadb/master/entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./master.cnf:/etc/mysql/conf.d/master.cnf:ro
+      - ./setup-replication.sql:/docker-entrypoint-initdb.d/setup-replication.sql:ro
     networks:
       - mariadb
     environment:
@@ -20,9 +22,10 @@ services:
       - "33061:3306"
     volumes:
       - /srv/mariadb/slave/1/data:/var/lib/mysql
-      - /srv/mariadb/slave/1/conf.d:/etc/mysql/conf.d:ro
-      - /srv/mariadb/slave/entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - /srv/mariadb/slave/1/conf.d:/etc/mysql/conf.d
+      - /srv/mariadb/slave/entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./start-replication.sql:/start-replication.sql:ro
+      - ./slave1.cnf:/etc/mysql/conf.d/slave1.cnf:ro
     links:
       - mariadb-master
     depends_on:
