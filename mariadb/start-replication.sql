@@ -1,9 +1,10 @@
 CHANGE MASTER TO
-ASTER_HOST='mariadb-master',
+MASTER_HOST='mariadb-master',
 MASTER_USER='replication_user',
 MASTER_PASSWORD='changeme',
 MASTER_PORT=3306,
 MASTER_CONNECT_RETRY=10,
-MASTER_USE_GTID=current_pos;
+MASTER_LOG_FILE='devbox-bin.000005',
+MASTER_LOG_POS=328;
 
 start slave;

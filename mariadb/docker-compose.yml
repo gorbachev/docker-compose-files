@@ -22,9 +22,11 @@ services:
       - /srv/mariadb/slave/1/data:/var/lib/mysql
       - /srv/mariadb/slave/1/conf.d:/etc/mysql/conf.d:ro
       - /srv/mariadb/slave/entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./start-replication.sql:/start-replication.sql:ro
+    links:
+      - mariadb-master
     depends_on:
       - mariadb-master
-    entrypoint: ./wait-for-master.sh mariadb-master:3306
     networks:
       - mariadb
     environment:
