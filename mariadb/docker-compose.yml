@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  mariadb-master:
+    image: mariadb
+    ports:
+      - "33060:3306"
+    volumes:
+      - /srv/mariadb/master/data:/var/lib/mysql
+      - /srv/mariadb/master/conf.d:/etc/mysql/conf.d:ro
+      - /srv/mariadb/master/entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    networks:
+      - mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: "changeme"
+
+  mariadb-slave1:
+    image: mariadb
+    ports:
+      - "33061:3306"
+    volumes:
+      - /srv/mariadb/slave/1/data:/var/lib/mysql
+      - /srv/mariadb/slave/1/conf.d:/etc/mysql/conf.d:ro
+      - /srv/mariadb/slave/entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      - mariadb-master
+    entrypoint: ./wait-for-master.sh mariadb-master:3306
+    networks:
+      - mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: "changeme"
+
+networks:
+  mariadb:
+    driver: bridge
