@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  rethinkdb-1:
+    image: rethinkdb
+    container_name: rethinkdb-1
+    ports:
+      - "8080:8080"
+      - "28015:28015"
+    volumes:
+      - "/srv/rethinkdb/1/data:/data"
+    networks:
+      - rethinkdb
+    command: rethinkdb --bind all
+
+  rethinkdb-2:
+    image: rethinkdb
+    container_name: rethinkdb-2
+    ports:
+      - "8081:8080"
+      - "28016:28015"
+    volumes:
+      - "/srv/rethinkdb/2/data:/data"
+    networks:
+      - rethinkdb
+    links:
+      - rethinkdb-1
+    depends_on:
+      - rethinkdb-1
+    command: rethinkdb --bind all --join rethinkdb-1:29015
+
+  rethinkdb-3:
+    image: rethinkdb
+    container_name: rethinkdb-3
+    ports:
+      - "8082:8080"
+      - "28017:28015"
+    volumes:
+      - "/srv/rethinkdb/3/data:/data"
+    networks:
+      - rethinkdb
+    links:
+      - rethinkdb-1
+    depends_on:
+      - rethinkdb-1
+    command: rethinkdb --bind all --join rethinkdb-1:29015
+
+networks:
+  rethinkdb:
+    driver: bridge
