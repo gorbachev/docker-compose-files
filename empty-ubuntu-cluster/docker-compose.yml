@@ -1,0 +1,34 @@
+version: '2'
+
+services:
+  server1:
+    image: ubuntu-devbox
+    container_name: server1
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - devnetwork
+
+  server2:
+    image: ubuntu-devbox
+    container_name: server2
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - devnetwork
+
+  server3:
+    image: ubuntu-devbox
+    container_name: server3
+    restart: always
+    stdin_open: true
+    tty: true
+    networks:
+      - devnetwork
+
+networks:
+  devnetwork:
+    driver: bridge
+
