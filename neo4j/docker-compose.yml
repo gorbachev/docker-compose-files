@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  neo4j:
+    image: neo4j
+    ports:
+      - "7474:7474"
+      - "7473:7473"
+      - "7687:7687"
+    volumes:
+      - "/srv/neo4j:/data"
+    networks:
+      - neo4j
+    restart: always
+
+networks:
+  neo4j:
+    driver: bridge
+
