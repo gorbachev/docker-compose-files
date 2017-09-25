@@ -1,0 +1,124 @@
+version: '3.3'
+
+services:
+  zk1:
+    image: zookeeper
+    restart: always
+    container_name: zk1
+    hostname: zk1
+    ports:
+      - 12181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
+    volumes:
+      - "/srv/zk/solr/zk1/data:/data"
+      - "/srv/zk/solr/zk1/log:/datalog"
+    networks:
+      netzksolr:
+        ipv4_address: 192.168.22.10
+
+  zk2:
+    image: zookeeper
+    restart: always
+    container_name: zk2
+    hostname: zk2
+    ports:
+      - 22181:2181
+    environment:
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
+    volumes:
+      - "/srv/zk/solr/zk2/data:/data"
+      - "/srv/zk/solr/zk2/log:/datalog"
+    networks:
+      netzksolr:
+        ipv4_address: 192.168.22.11
+
+  zk3:
+    image: zookeeper
+    restart: always
+    container_name: zk3
+    hostname: zk3
+    ports:
+      - 32181:2181
+    environment:
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
+    volumes:
+      - "/srv/zk/solr/zk3/data:/data"
+      - "/srv/zk/solr/zk3/log:/datalog"
+    networks:
+      netzksolr:
+        ipv4_address: 192.168.22.12
+
+  solr1:
+    image: solr
+    container_name: solr1
+    hostname: solr1
+    ports:
+      - "18983:8983"
+    environment:
+      ZK_HOST: zk1:2181,zk2:2181,zk3:2181
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+#    volumes:
+#      - "/srv/solr/solr1:/opt/solr/server/solr/mycores"
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-foreground
+    networks:
+      netzksolr:
+        ipv4_address: 192.168.22.20
+
+  solr2:
+    image: solr
+    container_name: solr2
+    hostname: solr2
+    ports:
+      - "28983:8983"
+    environment:
+      ZK_HOST: zk1:2181,zk2:2181,zk3:2181
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+#    volumes:
+#      - "/srv/solr/solr2:/opt/solr/server/solr/mycores"
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-foreground
+    networks:
+      netzksolr:
+        ipv4_address: 192.168.22.21
+
+  solr3:
+    image: solr
+    container_name: solr3
+    hostname: solr3
+    ports:
+      - "38983:8983"
+    environment:
+      ZK_HOST: zk1:2181,zk2:2181,zk3:2181
+    depends_on:
+      - zk1
+      - zk2
+      - zk3
+#    volumes:
+#      - "/srv/solr/solr3:/opt/solr/server/solr/mycores"
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-foreground
+    networks:
+      netzksolr:
+        ipv4_address: 192.168.22.22
+
+networks:
+  netzksolr:
+    driver: bridge
+    ipam:
+       driver: default
+       config:
+          - subnet: 192.168.22.0/24
