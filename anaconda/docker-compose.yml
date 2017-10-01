@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  anaconda:
+    image: tpp/anaconda3
+    container_name: conda
+    hostname: conda
+    volumes:
+      - "/srv/conda/notebooks:/opt/notebooks"
+    ports:
+      - 8888:8888

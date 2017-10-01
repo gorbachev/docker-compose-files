@@ -1,0 +1,4 @@
+menpo
+menpofit
+menpowidgets
+opencv-contrib-python
